@@ -1,2 +1,4 @@
-# mtm6302-flashcards
-This repository contains the starter file for the Flashcards project.
+# Flashcards
+
+## Objective
+Create a flashcard application that supports multiple decks of questions. Users will be able to start a quiz by selecting a deck. 
