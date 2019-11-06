@@ -124,12 +124,13 @@ const decks = {
 }
 
 const quiz = {
-  deck: null,
-  card: 0,
-  total: 0
+  deck: null, // shuffle copy of the deck
+  card: 0, // index of the current card
+  total: 0 // total number of cards
 }
 
 const list = Object.keys(decks)
+// console.log(list)
 
 const $decks = document.getElementById('decks')
 const $quiz = document.getElementById('quiz')
@@ -151,27 +152,101 @@ const $quit = document.getElementById('quit')
  * Display the first card
  */
 
+function startQuiz (deck) {
+  quiz.deck = shuffle(decks[deck])
+  // console.log(decks[deck])
+  quiz.card = 0
+  quiz.total = quiz.deck.length
+  showCard()
+  $quiz.classList.add('display')
+}
+
 /**
  * showCard function
  * Display the current card
  */
+
+function showCard () {
+  $answer.classList.remove('display')
+  $question.textContent = quiz.deck[quiz.card].question
+  $answer.textContent = quiz.deck[quiz.card].answer
+}
 
 /**
  * nextCard
  * Displays the next card
  */
 
+function nextCard () {
+  // $question.textContent = quiz.deck[quiz.card + 1].question
+  quiz.card = (quiz.card === quiz.total - 1 ? 0 : quiz.card + 1)
+  // $answer.classList.remove('display')
+  // $answer.textContent = quiz.deck[quiz.card + 1].answer
+  // quiz.card++
+  showCard()
+}
+
 /**
  * prevCard
  * Displays the prev card
  */
+
+function prevCard () {
+  // quiz.card = (quiz.card === 0 ? quiz.total : quiz.card - 1)
+  quiz.card = (quiz.card ? quiz.card : quiz.total) - 1
+  showCard()
+  // $answer.classList.remove('display')
+  // if (quiz.card > 0) {
+  //   $question.textContent = quiz.deck[quiz.card - 1].question
+  //   $answer.textContent = quiz.deck[quiz.card - 1].answer
+  //   quiz.card--
+  // } else {
+  //   $question.textContent = quiz.deck[quiz.total].question
+  //   $answer.textContent = quiz.deck[quiz.total].answer
+  //   quiz.card = quiz.total
+}
 
 /**
  * showAnswer
  * Displays the answer of the current card
  */
 
+function showAnswer () {
+  $answer.classList.toggle('display')
+}
+
 /**
  * quitQuiz
  * Quits the current quiz and result the quiz object
  */
+
+function quitDeck () {
+  quiz.deck = null
+  quiz.card = 0
+  quiz.total = 0
+  $quiz.classList.remove('display')
+}
+
+// const buttons = []
+// for (const deck of list) {
+//   buttons.push(`<button class="button" data-deck="${deck}">${deck}</button>`)
+// }
+
+// $decks.innerHTML = buttons.join('')
+
+$decks.innerHTML = list.map(deck => `<button class="button" data-deck="${deck}">${deck}</button>`).join('')
+
+$decks.addEventListener('click', function (e) {
+  if (e.target.classList.contains('button')) {
+    console.log(e.target.dataset.deck)
+    startQuiz(e.target.dataset.deck)
+  }
+})
+
+$showAnswer.addEventListener('click', showAnswer)
+
+$next.addEventListener('click', nextCard)
+
+$prev.addEventListener('click', prevCard)
+
+$quit.addEventListener('click', quitDeck)
